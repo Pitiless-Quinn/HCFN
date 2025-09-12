@@ -109,11 +109,8 @@ class FuzzyCausalConv1d(nn.Module):
         padded_x = F.pad(x, (self.padding, 0))
         patches = padded_x.unfold(dimension=2, size=self.kernel_size, step=1)
         patches = patches[:, :, :length, :]
-        # patches 形状: [batch, in_channels, length, kernel_size]
         patches = patches.transpose(1, 2)
-        # patches 形状: [batch, length, in_channels, kernel_size]
         patches = patches.reshape(batch_size, length, self.in_channels * self.kernel_size)
-        # patches 形状: [batch, length, patch_dim]
         firing_strengths = self.controller(patches)  # -> [batch, length, n_rules]
         expert_outputs = []
         for i in range(self.n_rules):
@@ -122,9 +119,7 @@ class FuzzyCausalConv1d(nn.Module):
             output_i = F.conv1d(padded_x, kernel_i, bias_i, dilation=self.dilation)
             expert_outputs.append(output_i)
         all_outputs = torch.stack(expert_outputs, dim=-1)
-        # all_outputs 形状: [batch, out_channels, length, n_rules]
         frs_reshaped = firing_strengths.unsqueeze(1)
-        # (B, C_out, L, N) * (B, 1, L, N) -> (B, C_out, L, N) -> sum -> (B, C_out, L)
         final_output = torch.sum(all_outputs * frs_reshaped, dim=-1)
         return final_output
 
@@ -370,4 +365,5 @@ class HCFN(nn.Module):
 
 if __name__ == '__main__':
     sModel = HCFN().cuda()
+
     summary(sModel, (1, 22, 1000))
