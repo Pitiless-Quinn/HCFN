@@ -361,9 +361,3 @@ class HCFN(nn.Module):
                          ur_weight * ur_reg
 
             return total_loss
-
-
-if __name__ == '__main__':
-    sModel = HCFN().cuda()
-
-    summary(sModel, (1, 22, 1000))
