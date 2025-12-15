@@ -4,7 +4,6 @@ import torch.nn.functional as F
 import torch.nn.init as Init
 import random
 import numpy as np
-from torchsummary import summary
 
 
 class Conv2dL2(nn.Module):
@@ -361,4 +360,5 @@ class HCFN(nn.Module):
                      ur_weight * ur_reg
 
         return total_loss
+
 
