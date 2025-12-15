@@ -349,15 +349,16 @@ class HCFN(nn.Module):
 
 
     def total_loss(self, output, target, frs, ce_weight=1.0, l2_weight=0.001, ur_weight=0.1):
-            ce_loss = F.cross_entropy(output, target)
-            l2_reg = 0.0
-            for model in self.modules():
-                if hasattr(model, 'l2_loss'):
-                    l2_reg = l2_reg + model.l2_loss()
-            ur_reg = self.classifier.ur_loss(frs)
+        ce_loss = F.cross_entropy(output, target)
+        l2_reg = 0.0
+        for model in self.modules():
+            if hasattr(model, 'l2_loss'):
+                l2_reg = l2_reg + model.l2_loss()
+        ur_reg = self.classifier.ur_loss(frs)
 
-            total_loss = ce_weight * ce_loss + \
-                         l2_weight * l2_reg + \
-                         ur_weight * ur_reg
+        total_loss = ce_weight * ce_loss + \
+                     l2_weight * l2_reg + \
+                     ur_weight * ur_reg
 
-            return total_loss
+        return total_loss
+
